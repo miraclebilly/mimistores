@@ -5,15 +5,19 @@ import Link from "next/link"
 import { urlForImage } from "@/sanity/lib/image"
 import { XCircle } from "lucide-react"
 import { formatCurrencyString } from "use-shopping-cart"
-
+import {useState} from 'react'
 import { SanityProduct } from "@/config/inventory"
 import { shimmer, toBase64 } from "@/lib/image"
 
 interface Props {
   products: SanityProduct[]
+  
 }
 
 export function ProductGrid( {products} : Props ) {
+
+
+
   if (products.length === 0) {
     return (
       <div className="mx-auto grid h-40 w-full place-items-center rounded-md border-2 border-dashed bg-gray-50 py-10 text-center dark:bg-gray-900">

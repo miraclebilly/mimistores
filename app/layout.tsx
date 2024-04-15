@@ -10,7 +10,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 
 // export const metadata: Metadata = {
-//   title: siteConfig.name,
+//   "title": siteConfig.name,
 //   description: siteConfig.description,
 //   icon: {
 //     icon: "/favicon.ico",

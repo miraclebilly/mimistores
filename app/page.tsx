@@ -1,6 +1,7 @@
+
 import { client } from "@/sanity/lib/client"
 import { groq } from "next-sanity"
-
+import { useState } from 'react'
 import { SanityProduct } from "@/config/inventory"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -32,11 +33,11 @@ export default async function Page( {searchParams}: Props) {
   const categoryFilter = category ? `&& "${category}" in categories` : ""
   const sizeFilter = size ? `&& "${size}" in sizes` : ""
   const searchFilter = search ? `&& name match "${search}"` : ""
-
+6
   const filter = `*[${productFilter}${colorFilter}${categoryFilter}${sizeFilter}${searchFilter}]`
 
   const products = await client.fetch<SanityProduct[]>(
-    groq`${filter} ${order} {
+    groq`${filter} ${order}[0...9] {
     _id,
     _createdAt,
     name,
@@ -47,7 +48,35 @@ export default async function Page( {searchParams}: Props) {
     description,
     "slug": slug.current
   }`)
-  
+
+  // console.log({"Products": products})
+
+  let lastId = ''
+
+  const nextPage = async function fetchNextPage() {
+    if (lastId === null) {
+      return []
+    }
+    const {result} = await client.fetch<SanityProduct[]>(
+      groq`${filter} ${order}[0...9] {
+      _id,
+      _createdAt,
+      name,
+      sku,
+      images,
+      currency,
+      price,
+      description,
+      "slug": slug.current
+    }`, {lastId})
+
+    if (result.length > 0) {
+      lastId = result[result.length - 1]._id
+    } else {
+      lastId == null
+    }
+    return result
+  }
  
   return (
     <div>
@@ -73,7 +102,7 @@ export default async function Page( {searchParams}: Props) {
               <div className="hidden lg:block">
               <ProductFilters/>
               </div>
-              <ProductGrid products= {products} />
+              <ProductGrid products= {products}  />
             </div>
           </section>
         </main>
